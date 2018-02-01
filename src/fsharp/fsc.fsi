@@ -70,6 +70,23 @@ val compileOfAst :
     dynamicAssemblyCreator: (TcGlobals * string * ILModuleDef -> unit) option
       -> unit
 
+val compileChecked :
+    ctok: CompilationThreadToken *
+    tcGlobals : TcGlobals *
+    tcImports : TcImports *
+    frameworkTcImports : TcImports *
+    generatedCcu : Tast.CcuThunk *
+    typedImplFiles : Tast.TypedImplFile list *
+    topAttrs : TypeChecker.TopAttribs *
+    tcConfig : TcConfig * 
+    outfile : string *
+    pdbFile : string option *
+    assemblyName : string *
+    errorLogger : ErrorLogger *
+    exiter : Exiter * 
+    tcImportsCapture : (TcImports -> unit) option *
+    dynamicAssemblyCreator: (TcGlobals * string * ILModuleDef -> unit) option
+      -> unit
 
 /// Part of LegacyHostedCompilerForTesting
 type InProcErrorLoggerProvider = 
