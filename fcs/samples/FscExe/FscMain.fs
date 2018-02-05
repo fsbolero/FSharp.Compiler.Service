@@ -83,7 +83,7 @@ module FSharpResidentCompiler =
                               let! (pwd,argv, reply: AsyncReplyChannel<_>) = inbox.Receive()
                               if !progress then printfn "server agent: got compilation request, argv = %A" argv
                               Environment.CurrentDirectory <- pwd
-                              let errors, exitCode = FSharpChecker.Create().Compile (argv) |> Async.RunSynchronously
+                              let errors, exitCode = FSharpChecker.Create().Compile (argv = argv) |> Async.RunSynchronously
                               for error in errors do eprintfn "%s" (error.ToString())
                               if !progress then printfn "server: finished compilation request, argv = %A" argv
                               let output = outputCollector.GetTextAndClear()
