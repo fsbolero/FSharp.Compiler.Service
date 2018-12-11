@@ -195,6 +195,10 @@ module internal FSharpEnvironment =
     //     - default location of fsi.exe in FSharp.VS.FSI.dll (REVIEW: check this)
     //     - default F# binaries directory in (project system) Project.fs
     let BinFolderOfDefaultFSharpCompiler(probePoint:string option) = 
+#if BLAZOR
+        ignore probePoint
+        Some "/tmp"
+#else
 #if FX_NO_WIN_REGISTRY
         ignore probePoint
 #if FX_NO_APP_DOMAINS
@@ -227,6 +231,7 @@ module internal FSharpEnvironment =
         with e -> 
             System.Diagnostics.Debug.Assert(false, "Error while determining default location of F# compiler")
             None
+#endif
 
 
     // Apply the given function to the registry entry corresponding to the subkey.
