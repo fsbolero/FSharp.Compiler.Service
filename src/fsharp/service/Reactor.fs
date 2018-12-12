@@ -9,6 +9,14 @@ open Microsoft.FSharp.Control
 open Microsoft.FSharp.Compiler.Lib
 open Microsoft.FSharp.Compiler.AbstractIL.Internal.Library
 
+#if BLAZOR
+type Trace =
+    static member TraceInformation(_fmt: string, [<ParamArray>] _args: obj[]) =
+        () //System.Console.WriteLine(fmt, args)
+    static member TraceWarning(_fmt: string, [<ParamArray>] _args: obj[]) =
+        () //System.Console.WriteLine(fmt, args)
+#endif
+
 /// Represents the capability to schedule work in the compiler service operations queue for the compilation thread
 type internal IReactorOperations = 
     abstract EnqueueAndAwaitOpAsync : userOpName:string * opName:string * opArg:string * (CompilationThreadToken -> Cancellable<'T>) -> Async<'T>

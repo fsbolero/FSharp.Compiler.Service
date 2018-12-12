@@ -53,6 +53,10 @@ open Microsoft.FSharp.Core.ReflectionAdapters
 
 type internal Layout = StructuredFormat.Layout
 
+#if BLAZOR
+type Trace = Microsoft.FSharp.Compiler.SourceCodeServices.Trace
+#endif
+
 [<AutoOpen>]
 module EnvMisc =
     let getToolTipTextSize = GetEnvInteger "FCS_GetToolTipTextCacheSize" 5

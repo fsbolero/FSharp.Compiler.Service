@@ -20,6 +20,10 @@ open Microsoft.FSharp.Compiler.ErrorLogger
 open Microsoft.FSharp.Compiler.CompileOps
 open Microsoft.FSharp.Compiler.Lib
 
+#if BLAZOR
+type Trace = Microsoft.FSharp.Compiler.SourceCodeServices.Trace
+#endif
+
 /// Methods for dealing with F# sources files.
 module SourceFile =
     /// Source file extensions

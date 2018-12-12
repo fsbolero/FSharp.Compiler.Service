@@ -5,6 +5,13 @@ namespace Microsoft.FSharp.Compiler.SourceCodeServices
 open System.Threading
 open Microsoft.FSharp.Compiler.AbstractIL.Internal.Library
 
+#if BLAZOR
+[<Class>]
+type Trace =
+    static member TraceInformation : string * [<System.ParamArray>] args: obj[] -> unit
+    static member TraceWarning : string * [<System.ParamArray>] args: obj[] -> unit
+#endif
+
 /// Represents the capability to schedule work in the compiler service operations queue for the compilation thread
 type internal IReactorOperations = 
 
