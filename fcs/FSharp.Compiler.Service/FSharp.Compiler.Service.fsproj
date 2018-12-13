@@ -31,6 +31,7 @@
     <PackageProjectUrl>https://github.com/fsharp/FSharp.Compiler.Service</PackageProjectUrl>
     <PackageIconUrl>https://raw.github.com/fsharp/FSharp.Compiler.Service/master/misc/logo.png</PackageIconUrl>
     <PackageTags>F#, fsharp, interactive, compiler, editor</PackageTags>
+    <PackageId>Bolero.FSharp.Compiler.Service</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>$(DefineConstants);FX_NO_PDB_READER</DefineConstants>
