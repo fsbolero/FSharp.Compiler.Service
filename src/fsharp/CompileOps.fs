@@ -1819,11 +1819,13 @@ let GetFsiLibraryName () = "FSharp.Compiler.Interactive.Settings"
 let DefaultReferencesForScriptsAndOutOfProjectSources(assumeDotNetFramework) = 
     [ if assumeDotNetFramework then 
           yield "System"
+#if !BLAZOR
           yield "System.Xml" 
           yield "System.Runtime.Remoting"
           yield "System.Runtime.Serialization.Formatters.Soap"
           yield "System.Data"
           yield "System.Drawing"
+#endif
           yield "System.Core"
           // These are the Portable-profile and .NET Standard 1.6 dependencies of FSharp.Core.dll.  These are needed
           // when an F# sript references an F# profile 7, 78, 259 or .NET Standard 1.6 component which in turn refers 
@@ -1831,11 +1833,15 @@ let DefaultReferencesForScriptsAndOutOfProjectSources(assumeDotNetFramework) =
           yield "System.Runtime" // lots of types
           yield "System.Linq" // System.Linq.Expressions.Expression<T> 
           yield "System.Reflection" // System.Reflection.ParameterInfo
+#if !BLAZOR
           yield "System.Linq.Expressions" // System.Linq.IQueryable<T>
+#endif
           yield "System.Threading.Tasks" // valuetype [System.Threading.Tasks]System.Threading.CancellationToken
           yield "System.IO"  //  System.IO.TextWriter
           //yield "System.Console"  //  System.Console.Out etc.
+#if !BLAZOR
           yield "System.Net.Requests"  //  System.Net.WebResponse etc.
+#endif
           yield "System.Collections" // System.Collections.Generic.List<T>
           yield "System.Runtime.Numerics" // BigInteger
           yield "System.Threading"  // OperationCanceledException
@@ -1845,9 +1851,11 @@ let DefaultReferencesForScriptsAndOutOfProjectSources(assumeDotNetFramework) =
           | None -> () 
           | Some v -> yield v 
 
+#if !BLAZOR
           yield "System.Web"
           yield "System.Web.Services"
           yield "System.Windows.Forms"
+#endif
           yield "System.Numerics" 
      else
           yield Path.Combine(Path.GetDirectoryName(typeof<System.Object>.Assembly.Location), "mscorlib.dll"); // mscorlib
@@ -1986,7 +1994,11 @@ let BasicReferencesForScriptLoadClosure(useFsiAuxLib, assumeDotNetFramework) =
 #endif
          yield GetDefaultFSharpCoreReference() ] @ // Need to resolve these explicitly so they will be found in the reference assemblies directory which is where the .xml files are.
     DefaultReferencesForScriptsAndOutOfProjectSources(assumeDotNetFramework) @ 
+#if BLAZOR
+    (ignore (useFsiAuxLib: bool); [])
+#else
     [ if useFsiAuxLib then yield GetFsiLibraryName () ]
+#endif
 
 let (++) x s = x @ [s]
 
