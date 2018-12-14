@@ -1195,10 +1195,6 @@ type IncrementalBuilder(tcGlobals, frameworkTcImports, nonFrameworkAssemblyInput
                         assemblyName, niceNameGen: Ast.NiceNameGenerator, lexResourceManager, 
                         sourceFiles, loadClosureOpt: LoadClosure option, 
                         keepAssemblyContents, keepAllBackgroundResolutions, maxTimeShareMilliseconds) =
-//type IncrementalBuilder(frameworkTcImportsCache: FrameworkImportsCache, tcConfig: TcConfig, projectDirectory, outfile, pdbFile,
-//                        assemblyName, niceNameGen: Ast.NiceNameGenerator, lexResourceManager,
-//                        sourceFiles, projectReferences: IProjectReference list, loadClosureOpt: LoadClosure option, ensureReactive, 
-//                        keepAssemblyContents, keepAllBackgroundResolutions) =
 
     let tcConfigP = TcConfigProvider.Constant(tcConfig)
     let importsInvalidated = new Event<string>()
@@ -1806,7 +1802,7 @@ type IncrementalBuilder(tcGlobals, frameworkTcImports, nonFrameworkAssemblyInput
 
             let niceNameGen = NiceNameGenerator()
         
-            let outfile, pdbFile, assemblyName = tcConfigB.DecideNames sourceFilesNew
+            let outfile, _, assemblyName = tcConfigB.DecideNames sourceFilesNew
         
             // Resolve assemblies and create the framework TcImports. This is done when constructing the
             // builder itself, rather than as an incremental task. This caches a level of "system" references. No type providers are 
@@ -1842,9 +1838,6 @@ type IncrementalBuilder(tcGlobals, frameworkTcImports, nonFrameworkAssemblyInput
                 new IncrementalBuilder(tcGlobals, frameworkTcImports, nonFrameworkAssemblyInputs, nonFrameworkResolutions, unresolvedReferences, 
                                         tcConfig, projectDirectory, outfile, assemblyName, niceNameGen, 
                                         resourceManager, sourceFilesNew, loadClosureOpt, 
-                //new IncrementalBuilder(frameworkTcImportsCache,
-                //                        tcConfig, projectDirectory, outfile, pdbFile, assemblyName, niceNameGen,
-                //                        resourceManager, sourceFilesNew, projectReferences, loadClosureOpt, ensureReactive=true, 
                                         keepAssemblyContents=keepAssemblyContents, 
                                         keepAllBackgroundResolutions=keepAllBackgroundResolutions, 
                                         maxTimeShareMilliseconds=maxTimeShareMilliseconds)

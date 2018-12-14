@@ -2264,9 +2264,9 @@ module CompileHelpers =
 
     let compileFromChecked (ctok, cpr: FSharpCheckProjectResults, tcImportsCapture, dynamicAssemblyCreator)  = 
     
-        let errors, errorLogger, loggerProvider = mkCompilationErorHandlers()
+        let errors, errorLogger, _loggerProvider = mkCompilationErorHandlers()
         
-        let (tcConfig, tcGlobals, tcImports, thisCcu, _ccuSig, _tcSymbolUses, topAttribs, tcAssemblyData, ilAssemRef, _ad, tcAssemblyExpr, _dependencyFiles) = cpr.GetDetails() 
+        let (tcConfig, tcGlobals, tcImports, thisCcu, _ccuSig, _tcSymbolUses, topAttribs, tcAssemblyData, _ilAssemRef, _ad, tcAssemblyExpr, _dependencyFiles) = cpr.GetDetails() 
 
         let result = 
             match tcAssemblyExpr, topAttribs, tcAssemblyData with
