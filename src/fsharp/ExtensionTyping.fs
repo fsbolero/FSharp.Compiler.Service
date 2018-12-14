@@ -38,6 +38,7 @@ module internal ExtensionTyping =
 
     // Specify the tooling-compatible fragments of a path such as:
     //     typeproviders/fsharp41/net461/MyProvider.DesignTime.dll
+    //     tools/fsharp41/net461/MyProvider.DesignTime.dll
     // See https://github.com/Microsoft/visualfsharp/issues/3736
 
     // Represents the FF#-compiler <-> type provider protocol.
@@ -55,16 +56,12 @@ module internal ExtensionTyping =
             System.Diagnostics.Debug.Assert(false, "Couldn't determine runtime tooling context, assuming it supports at least .NET Standard 2.0")
             [  "netstandard2.0"]
 
-    // When significant new processor types appear add a new moniker here. Note that use of this qualifier will be very rare
-    // and we don't expect different design-time assemblies will be needed for different architectures very often.  Some
-    // exceptions may be design-time components for type providers for systems such as Python or R.
-    let toolingCompatibleArch() = if sizeof<nativeint> = 8 then "x64" else "x86" 
+
     let toolingCompatiblePaths() = 
         [ for protocol in toolingCompatibleTypeProviderProtocolMonikers() do
-                for netRuntime in toolingCompatibleVersions() do
-                    let dir = Path.Combine("typeproviders", protocol, netRuntime) 
-                    yield Path.Combine(dir, toolingCompatibleArch())
-                    yield dir
+            for netRuntime in toolingCompatibleVersions() do 
+                yield Path.Combine("typeproviders", protocol, netRuntime)
+                yield Path.Combine("tools", protocol, netRuntime)
         ]
 
     /// Load a the design-time part of a type-provider into the host process, and look for types
@@ -1098,7 +1095,7 @@ module internal ExtensionTyping =
         try 
             match ResolveProvidedType(resolver, m, moduleOrNamespace, typeName) with
             | Tainted.Null -> None
-            | typ -> Some typ
+            | ty -> Some ty
         with e -> 
             errorRecovery e m
             None
@@ -1202,16 +1199,8 @@ module internal ExtensionTyping =
                 staticParameters |> Array.map (fun sp -> 
                       let typeBeforeArgumentsName = typeBeforeArguments.PUntaint ((fun st -> st.Name), m)
                       let spName = sp.PUntaint ((fun sp -> sp.Name), m)
-                      if not (argSpecsTable.ContainsKey spName) then 
-                          if sp.PUntaint ((fun sp -> sp.IsOptional), m) then 
-                              match sp.PUntaint((fun sp -> sp.RawDefaultValue), m) with
-                              | null -> error (Error(FSComp.SR.etStaticParameterRequiresAValue (spName, typeBeforeArgumentsName, typeBeforeArgumentsName, spName), range0))
-                              | v -> v
-                          else
-                              error(Error(FSComp.SR.etProvidedTypeReferenceMissingArgument(spName), range0))
-                      else
-                          let arg = argSpecsTable.[spName]
-                      
+                      match argSpecsTable.TryGetValue(spName) with
+                      | true, arg ->
                           /// Find the name of the representation type for the static parameter
                           let spReprTypeName = 
                               sp.PUntaint((fun sp -> 
@@ -1235,7 +1224,16 @@ module internal ExtensionTyping =
                           | "System.Char" -> box (char arg)
                           | "System.Boolean" -> box (arg = "True")
                           | "System.String" -> box (string arg)
-                          | s -> error(Error(FSComp.SR.etUnknownStaticArgumentKind(s, typeLogicalName), range0)))
+                          | s -> error(Error(FSComp.SR.etUnknownStaticArgumentKind(s, typeLogicalName), range0))
+
+                      | _ ->
+                          if sp.PUntaint ((fun sp -> sp.IsOptional), m) then 
+                              match sp.PUntaint((fun sp -> sp.RawDefaultValue), m) with
+                              | null -> error (Error(FSComp.SR.etStaticParameterRequiresAValue (spName, typeBeforeArgumentsName, typeBeforeArgumentsName, spName), range0))
+                              | v -> v
+                          else
+                              error(Error(FSComp.SR.etProvidedTypeReferenceMissingArgument(spName), range0)))
+                    
 
             match TryApplyProvidedType(typeBeforeArguments, None, staticArgs, range0) with 
             | Some (typeWithArguments, checkTypeName) -> 

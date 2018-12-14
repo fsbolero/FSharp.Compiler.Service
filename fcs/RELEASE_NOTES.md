@@ -1,3 +1,37 @@
+#### 25.0.1
+  * Integrate visualfsharp master to 15d9391e78c554f91824d2be2e69938cd811df68
+
+#### 24.0.1
+  * Integrate visualfsharp master to 59156db2d0a744233d1baffee7088ca2d9f959c7
+
+#### 23.0.3
+  * Clarify package authors
+
+#### 23.0.1
+  * Integrate visualfsharp master to ee938a7a5cfdf4849b091087efbf64605110541f
+
+#### 22.0.3
+  * [Add entity.DeclaringEntity](https://github.com/Microsoft/visualfsharp/pull/4633), [FCS feature request](https://github.com/fsharp/FSharp.Compiler.Service/issues/830)
+
+#### 22.0.2
+  * Use correct version number in DLLs (needed until https://github.com/Microsoft/visualfsharp/issues/3113 is fixed)
+
+#### 22.0.1
+  * Integrate visualfsharp master
+  * Includes recent memory usage reduction work for ByteFile and ILAttributes
+
+#### 21.0.1
+  * Use new .NET SDK project files
+  * FSharp.Compiler.Service nuget now uses net45 and netstandard2.0
+  * FSharp.Compiler.Service netstandard2.0 now supports type providers
+  
+#### 20.0.1
+  * Integrate visualfsharp master
+
+#### 19.0.1
+  * Rename ``LogicalEnclosingEntity`` to ``ApparentEnclosingEntity`` for consistency int he F# codebase terminology.
+  * Rename ``EnclosingEntity`` to ``DeclaringEntity``.  In the case of extension properties, ``EnclosingEntity`` was incorrectly returning the logical enclosing entity (i.e. the type the property appears to extend), and in this case ``ApparentEnclosingEntity`` should be used instead.
+  
 #### 18.0.1
   * Integrate visualfsharp master
   
@@ -410,7 +444,7 @@
 * Return additional 'property' and 'event' methods for F#-defined types to regularize symbols (#108, #143)
 * Add IsPropertySetterMethod and IsPropertyGetterMethod which only return true for getter/setter methods, not properties. Deprecate IsSetterMethod and IsGetterMethod in favour of these.
 * Add IsEventAddMethod and IsEventRemoveMethod which return true for add/remove methods with an associated event
-* Change IsProperty and IsEvent to only return true for the symbols for properties and events, rather than the methods assocaited with these
+* Change IsProperty and IsEvent to only return true for the symbols for properties and events, rather than the methods associated with these
 * Fix value of Assembly for some symbols (e.g. property symbols)
 
 #### 0.0.45 - 
