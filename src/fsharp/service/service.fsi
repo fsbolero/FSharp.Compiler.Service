@@ -587,6 +587,12 @@ type public FSharpChecker =
     member Compile: argv:string[] * ?userOpName: string -> Async<FSharpErrorInfo [] * int>
     
     /// <summary>
+    /// Compile a type-checked project.
+    /// Add optional extra embedded resources, files names are resolved via the FileSystem API.
+    /// </summary>
+    member Compile: cpr:FSharpCheckProjectResults * ?userOpName: string -> Async<FSharpErrorInfo [] * int>
+
+    /// <summary>
     /// TypeCheck and compile provided AST
     /// </summary>
     /// <param name="userOpName">An optional string used for tracing compiler operations associated with this request.</param>
