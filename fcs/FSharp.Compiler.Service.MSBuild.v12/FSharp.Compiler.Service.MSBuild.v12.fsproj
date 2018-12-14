@@ -44,12 +44,6 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.v12.0">
-      <HintPath>$(FSharpSourcesRoot)/../fcs/dependencies/MSBuild.v12.0/Microsoft.Build.Utilities.v12.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Build.Tasks.v12.0">
-      <HintPath>$(FSharpSourcesRoot)/../fcs/dependencies/MSBuild.v12.0/Microsoft.Build.Tasks.v12.0.dll</HintPath>
-      <Private>True</Private>
       <HintPath>$(FSharpSourcesRoot)\..\fcs\dependencies\MSBuild.v12.0\Microsoft.Build.Utilities.v12.0.dll</HintPath>
       <Private>false</Private>
     </Reference>
@@ -71,5 +65,4 @@
     </ProjectReference>
     <ProjectReference Include="..\FSharp.Compiler.Service\FSharp.Compiler.Service.fsproj" />
   </ItemGroup>
-  <Import Project="$(FSharpSourcesRoot)\..\packages\FSharp.Compiler.Tools.4.1.27\tools\Microsoft.FSharp.Targets" />
 </Project>

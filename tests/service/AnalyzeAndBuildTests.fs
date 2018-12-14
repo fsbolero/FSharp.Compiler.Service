@@ -125,15 +125,14 @@ let u = Case1 3
     let cleanFileName a = if a = fileName1 then "file1" else "??"
 
 [<Test>]
+[<Ignore("SKIPPED: optdata/sigdata not correct when building using checked state")>]
 let ``Test multi project 1 whole project errors`` () = 
 
-    //let projectA = checker.ParseAndCheckProject(Project1A.options) |> Async.RunSynchronously
-    //let errA, resA = checker.Compile(projectA) |> Async.RunSynchronously
-    let errA, resA = checker.Compile(Project1A.args) |> Async.RunSynchronously
+    let projectA = checker.ParseAndCheckProject(Project1A.options) |> Async.RunSynchronously
+    let _errA, _resA = checker.Compile(projectA) |> Async.RunSynchronously
     
-    //let projectB = checker.ParseAndCheckProject(Project1B.options) |> Async.RunSynchronously
-    //let errB, resB = checker.Compile(projectB) |> Async.RunSynchronously     
-    let errB, resB = checker.Compile(Project1B.args) |> Async.RunSynchronously     
+    let projectB = checker.ParseAndCheckProject(Project1B.options) |> Async.RunSynchronously
+    let _errB, _resB = checker.Compile(projectB) |> Async.RunSynchronously     
 
     let wholeProjectResults = checker.ParseAndCheckProject(MultiProject1.options) |> Async.RunSynchronously
 
