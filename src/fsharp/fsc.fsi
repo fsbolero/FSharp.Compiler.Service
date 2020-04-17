@@ -2,14 +2,17 @@
 
 module internal FSharp.Compiler.Driver 
 
-open FSharp.Compiler.Ast
+open FSharp.Compiler.AbstractIL
 open FSharp.Compiler.AbstractIL.IL
 open FSharp.Compiler.AbstractIL.ILBinaryReader
 open FSharp.Compiler.AbstractIL.Internal.Library
-open FSharp.Compiler.AbstractIL
-open FSharp.Compiler.ErrorLogger
 open FSharp.Compiler.CompileOps
+open FSharp.Compiler.ErrorLogger
+open FSharp.Compiler.SyntaxTree
 open FSharp.Compiler.TcGlobals
+open FSharp.Compiler.TypeChecker
+open FSharp.Compiler.TypedTree
+open FSharp.Compiler.TypedTreeOps
 
 [<AbstractClass>]
 type ErrorLoggerProvider =
@@ -18,8 +21,10 @@ type ErrorLoggerProvider =
 
 type StrongNameSigningInfo 
 
-val EncodeInterfaceData: tcConfig:TcConfig * tcGlobals:TcGlobals * exportRemapping:Tastops.Remap * generatedCcu: Tast.CcuThunk * outfile: string * isIncrementalBuild: bool -> ILAttribute list * ILResource list
-val ValidateKeySigningAttributes : tcConfig:TcConfig * tcGlobals:TcGlobals * TypeChecker.TopAttribs -> StrongNameSigningInfo
+val EncodeInterfaceData: tcConfig:TcConfig * tcGlobals:TcGlobals * exportRemapping:Remap * generatedCcu: CcuThunk * outfile: string * isIncrementalBuild: bool -> ILAttribute list * ILResource list
+
+val ValidateKeySigningAttributes : tcConfig:TcConfig * tcGlobals:TcGlobals * TopAttribs -> StrongNameSigningInfo
+
 val GetStrongNameSigner : StrongNameSigningInfo -> ILBinaryWriter.ILStrongNameSigner option
 
 /// Process the given set of command line arguments
@@ -76,8 +81,8 @@ val compileChecked :
     tcGlobals : TcGlobals *
     tcImports : TcImports *
     frameworkTcImports : TcImports *
-    generatedCcu : Tast.CcuThunk *
-    typedImplFiles : Tast.TypedImplFile list *
+    generatedCcu : TypedTree.CcuThunk *
+    typedImplFiles : TypedTree.TypedImplFile list *
     topAttrs : TypeChecker.TopAttribs *
     tcConfig : TcConfig * 
     outfile : string *
