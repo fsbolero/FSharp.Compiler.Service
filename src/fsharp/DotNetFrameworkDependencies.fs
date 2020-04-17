@@ -280,11 +280,13 @@ module internal FSharp.Compiler.DotNetFrameworkDependencies
     let getDesktopDefaultReferences useFsiAuxLib = [
         yield "mscorlib"
         yield "System"
+#if !BLAZOR
         yield "System.Xml"
         yield "System.Runtime.Remoting"
         yield "System.Runtime.Serialization.Formatters.Soap"
         yield "System.Data"
         yield "System.Drawing"
+#endif
         yield "System.Core"
 
         yield getFSharpCoreLibraryName
@@ -306,16 +308,22 @@ module internal FSharp.Compiler.DotNetFrameworkDependencies
         yield "System.Runtime"          // lots of types
         yield "System.Linq"             // System.Linq.Expressions.Expression<T> 
         yield "System.Reflection"       // System.Reflection.ParameterInfo
+#if !BLAZOR
         yield "System.Linq.Expressions" // System.Linq.IQueryable<T>
+#endif
         yield "System.Threading.Tasks"  // valuetype [System.Threading.Tasks]System.Threading.CancellationToken
         yield "System.IO"               //  System.IO.TextWriter
+#if !BLAZOR
         yield "System.Net.Requests"     //  System.Net.WebResponse etc.
+#endif
         yield "System.Collections"      // System.Collections.Generic.List<T>
         yield "System.Runtime.Numerics" // BigInteger
         yield "System.Threading"        // OperationCanceledException
+#if !BLAZOR
         yield "System.Web"
         yield "System.Web.Services"
         yield "System.Windows.Forms"
+#endif
         yield "System.Numerics"
     ]
 
