@@ -25,6 +25,7 @@
   <PropertyGroup>
     <FSharpSourcesRoot>$(MSBuildThisFileDirectory)..\src</FSharpSourcesRoot>
     <VersionPrefix Condition="'$(VersionPrefix)' == ''">22.0.3</VersionPrefix>
+    <VersionPrefix Condition="'$(BUILD_NUMBER)' != ''">$(VersionPrefix).$(BUILD_NUMBER)</VersionPrefix>
     <OtherFlags>--version:$(VersionPrefix)</OtherFlags>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>    
     <!-- FSharp.Compiler.Tools is currently only used to get a working FSI.EXE to execute some scripts during the build -->
