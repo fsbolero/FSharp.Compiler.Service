@@ -1769,10 +1769,10 @@ let CollectDiagnostic (implicitIncludeDir, showFullPaths, flattenErrors, errorSt
 
     match err.Exception with 
     | ReportedError _ -> 
-        assert ("" = "Unexpected ReportedError") //  this should never happen 
+        Debug.Assert ("" = "Unexpected ReportedError") //  this should never happen 
         Seq.empty
     | StopProcessing -> 
-        assert ("" = "Unexpected StopProcessing") // this should never happen 
+        Debug.Assert ("" = "Unexpected StopProcessing") // this should never happen 
         Seq.empty
     | _ -> 
         let errors = ResizeArray()
@@ -3948,7 +3948,7 @@ and [<Sealed>] TcImports(tcConfigP: TcConfigProvider, initialResolutions: TcAsse
     let disposal = new TcImportsSafeDisposal(disposeActions, disposeTypeProviderActions, compilationThread)
     
     let CheckDisposed() =
-        if disposed then assert false
+        if disposed then Debug.Assert false
 
     let dispose () =
         CheckDisposed()
@@ -4479,7 +4479,7 @@ and [<Sealed>] TcImports(tcConfigP: TcConfigProvider, initialResolutions: TcAsse
     member tcImports.PrepareToImportReferencedILAssembly (ctok, m, filename, dllinfo: ImportedBinary) =
         CheckDisposed()
         let tcConfig = tcConfigP.Get ctok
-        assert dllinfo.RawMetadata.TryGetILModuleDef().IsSome
+        Debug.Assert(dllinfo.RawMetadata.TryGetILModuleDef().IsSome)
         let ilModule = dllinfo.RawMetadata.TryGetILModuleDef().Value
         let ilScopeRef = dllinfo.ILScopeRef
         let aref =   

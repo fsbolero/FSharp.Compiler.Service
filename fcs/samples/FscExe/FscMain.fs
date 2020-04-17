@@ -3,7 +3,8 @@
 module internal FSharp.Compiler.CommandLineMain
 
 open System
-open System.Diagnostics
+type private Process = System.Diagnostics.Process
+type private ProcessStartInfo = System.Diagnostics.ProcessStartInfo
 open System.IO
 open System.Reflection
 open System.Runtime.CompilerServices

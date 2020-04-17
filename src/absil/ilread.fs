@@ -3029,6 +3029,10 @@ and seekReadManifestResources (ctxt: ILMetadataReader) canReduceMemory (mdv: Bin
                     let offsetOfBytesFromStartOfPhysicalPEFile = start + 4
                     let bytes = 
                         let bytes = pevEager.Slice(offsetOfBytesFromStartOfPhysicalPEFile, resourceLength)
+#if BLAZOR
+                        ignore canReduceMemory
+                        let canReduceMemory = false
+#endif
                         // If we are trying to reduce memory, create a memory mapped file based on the contents.
                         if canReduceMemory then
                             ByteMemory.CreateMemoryMappedFile bytes

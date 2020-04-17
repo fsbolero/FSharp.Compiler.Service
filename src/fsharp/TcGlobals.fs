@@ -9,7 +9,8 @@
 module internal FSharp.Compiler.TcGlobals
 
 open System.Collections.Generic
-open System.Diagnostics
+type DebuggerBrowsableAttribute = System.Diagnostics.DebuggerBrowsableAttribute
+type DebuggerBrowsableState = System.Diagnostics.DebuggerBrowsableState
 
 open FSharp.Compiler.AbstractIL 
 open FSharp.Compiler.AbstractIL.IL 

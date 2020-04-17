@@ -6,7 +6,8 @@ module public FSharp.Compiler.AbstractIL.Internal.Library
 
 open System
 open System.Collections.Generic
-open System.Diagnostics
+type private Process = System.Diagnostics.Process
+type private Stopwatch = System.Diagnostics.Stopwatch
 open System.IO
 open System.Reflection
 open System.Threading
@@ -322,7 +323,7 @@ module List =
         let rec loop acc l = 
             match l with
             | [] -> 
-                Debug.Assert(false, "empty list")
+                System.Diagnostics.Debug.Assert(false, "empty list")
                 invalidArg "l" "empty list" 
             | [h] -> List.rev acc, h
             | h :: t -> loop (h :: acc) t
@@ -338,7 +339,7 @@ module List =
     let headAndTail l =
         match l with 
         | [] -> 
-            Debug.Assert(false, "empty list")
+            System.Diagnostics.Debug.Assert(false, "empty list")
             failwith "List.headAndTail"
         | h :: t -> h, t
 

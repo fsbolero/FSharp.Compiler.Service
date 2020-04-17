@@ -1,8 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved.  See License.txt in the project root for license information.
 
 namespace FSharp.Compiler
 
+#if !BLAZOR
 open System.Diagnostics.Tracing
+#endif
 open System
 
 type LogCompilerFunctionId =
@@ -13,6 +15,17 @@ type LogCompilerFunctionId =
     | CompileOps_TypeCheckOneInputAndFinishEventually = 5
     
 /// This is for ETW tracing across FSharp.Compiler.
+#if BLAZOR
+type FSharpCompilerEventSource() =
+    static let instance = new FSharpCompilerEventSource()
+    static member Instance = instance
+    member this.Log(_: LogCompilerFunctionId) = ()
+    member this.LogMessage(_: string, _: LogCompilerFunctionId) = ()
+    member this.BlockStart(_: LogCompilerFunctionId) = ()
+    member this.BlockStop(_: LogCompilerFunctionId) = ()
+    member this.BlockMessageStart(_: string, _: LogCompilerFunctionId) = ()
+    member this.BlockMessageStop(_: string, _: LogCompilerFunctionId) = ()
+#else
 [<Sealed;EventSource(Name = "FSharpCompiler")>]
 type FSharpCompilerEventSource() =
     inherit EventSource()
@@ -50,6 +63,7 @@ type FSharpCompilerEventSource() =
     member this.BlockMessageStop(message: string, functionId: LogCompilerFunctionId) =
         if this.IsEnabled() then
             this.WriteEvent(6, message, int functionId)
+#endif
 
 [<RequireQualifiedAccess>]
 module Logger =

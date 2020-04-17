@@ -288,7 +288,11 @@ module internal FSharp.Compiler.DotNetFrameworkDependencies
         yield "System.Core"
 
         yield getFSharpCoreLibraryName
+#if BLAZOR
+        ignore useFsiAuxLib
+#else
         if useFsiAuxLib then yield getFsiLibraryName
+#endif
 
         // always include a default reference to System.ValueTuple.dll in scripts and out-of-project sources 
         match getDefaultSystemValueTupleReference () with

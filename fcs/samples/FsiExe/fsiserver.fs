@@ -24,7 +24,7 @@ namespace FSharp.Compiler.Server.Shared
 do()
 
 open System
-open System.Diagnostics
+open System.Diagnostics.CodeAnalysis
 open System.Runtime.Remoting.Channels
 open System.Runtime.Remoting
 open System.Runtime.Remoting.Lifetime
@@ -39,7 +39,7 @@ type internal FSharpInteractiveServer() =
 #endif
     default x.Interrupt() = ()
 
-    [<CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")>]
+    [<SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")>]
     static member StartServer(channelName:string,server:FSharpInteractiveServer) =
         let chan = new Ipc.IpcChannel(channelName) 
         LifetimeServices.LeaseTime            <- TimeSpan(7,0,0,0); // days,hours,mins,secs 

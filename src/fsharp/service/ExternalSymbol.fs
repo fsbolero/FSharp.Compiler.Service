@@ -4,7 +4,7 @@ namespace FSharp.Compiler.SourceCodeServices
 
 open FSharp.Reflection
 open FSharp.Compiler.AbstractIL.IL
-open System.Diagnostics
+type private DebuggerDisplayAttribute = System.Diagnostics.DebuggerDisplayAttribute
 
 module private Option =
 

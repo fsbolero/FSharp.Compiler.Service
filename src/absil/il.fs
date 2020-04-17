@@ -7,7 +7,8 @@ module FSharp.Compiler.AbstractIL.IL
 #nowarn "346" // The struct, record or union type 'IlxExtensionType' has an explicit implementation of 'Object.Equals'. ...
 
 open System
-open System.Diagnostics
+type private DebuggerBrowsableAttribute = System.Diagnostics.DebuggerBrowsableAttribute
+type private DebuggerBrowsableState = System.Diagnostics.DebuggerBrowsableState
 open System.IO
 open System.Collections
 open System.Collections.Generic
