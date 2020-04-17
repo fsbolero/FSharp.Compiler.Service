@@ -352,13 +352,15 @@ type public FSharpCheckProjectResults =
 
     member internal RawFSharpAssemblyData : IRawFSharpAssemblyData option
 
+    member internal GetDetails : unit -> (TcConfig * TcGlobals * TcImports * CcuThunk * ModuleOrNamespaceType * TcSymbolUses list * TopAttribs option * CompileOps.IRawFSharpAssemblyData option * ILAssemblyRef * AccessorDomain * TypedImplFile list option * string[])
+
     // Internal constructor.
     internal new : 
         projectFileName:string *
         tcConfigOption: TcConfig option *
         keepAssemblyContents: bool *
         errors: FSharpErrorInfo[] * 
-        details:(TcGlobals * TcImports * CcuThunk * ModuleOrNamespaceType * TcSymbolUses list * TopAttribs option * CompileOps.IRawFSharpAssemblyData option * ILAssemblyRef * AccessorDomain * TypedImplFile list option * string[]) option 
+        details:(TcConfig * TcGlobals * TcImports * CcuThunk * ModuleOrNamespaceType * TcSymbolUses list * TopAttribs option * CompileOps.IRawFSharpAssemblyData option * ILAssemblyRef * AccessorDomain * TypedImplFile list option * string[]) option 
            -> FSharpCheckProjectResults
 
 module internal ParseAndCheckFile = 

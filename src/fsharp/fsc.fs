@@ -2020,7 +2020,8 @@ let main1OfAst (ctok, legacyReferenceResolver, reduceMemoryUsage, assemblyName, 
 
   
 /// Phase 2a: encode signature data, optimize, encode optimization data
-let main2a(Args (ctok, tcConfig, tcImports, frameworkTcImports: TcImports, tcGlobals, 
+let main2a isIncrementalBuild
+           (Args (ctok, tcConfig, tcImports, frameworkTcImports: TcImports, tcGlobals, 
                  errorLogger: ErrorLogger, generatedCcu: CcuThunk, outfile, typedImplFiles, 
                  topAttrs, pdbfile, assemblyName, assemVerFromAttrib, signingInfo, exiter: Exiter)) = 
       
@@ -2030,7 +2031,7 @@ let main2a(Args (ctok, tcConfig, tcImports, frameworkTcImports: TcImports, tcGlo
     
     let sigDataAttributes, sigDataResources = 
       try
-        EncodeInterfaceData(tcConfig, tcGlobals, exportRemapping, generatedCcu, outfile, false)
+        EncodeInterfaceData(tcConfig, tcGlobals, exportRemapping, generatedCcu, outfile, isIncrementalBuild)
       with e -> 
         errorRecoveryNoRange e
         exiter.Exit 1
@@ -2058,7 +2059,7 @@ let main2a(Args (ctok, tcConfig, tcImports, frameworkTcImports: TcImports, tcGlo
         
     // Encode the optimization data
     ReportTime tcConfig ("Encoding OptData")
-    let optDataResources = EncodeOptimizationData(tcGlobals, tcConfig, outfile, exportRemapping, (generatedCcu, optimizationData), false)
+    let optDataResources = EncodeOptimizationData(tcGlobals, tcConfig, outfile, exportRemapping, (generatedCcu, optimizationData), isIncrementalBuild)
 
     // Pass on only the minimum information required for the next phase
     Args (ctok, tcConfig, tcImports, tcGlobals, errorLogger, 
@@ -2198,7 +2199,7 @@ let typecheckAndCompile
 
     main0(ctok, argv, legacyReferenceResolver, bannerAlreadyPrinted, reduceMemoryUsage, defaultCopyFSharpCore, exiter, errorLoggerProvider, d)
     |> main1
-    |> main2a
+    |> main2a false
     |> main2b (tcImportsCapture,dynamicAssemblyCreator)
     |> main3 
     |> main4 dynamicAssemblyCreator
@@ -2207,12 +2208,19 @@ let typecheckAndCompile
 let compileOfAst 
        (ctok, legacyReferenceResolver, reduceMemoryUsage, assemblyName, target, 
         outFile, pdbFile, dllReferences, noframework, exiter, errorLoggerProvider, inputs, tcImportsCapture, dynamicAssemblyCreator) = 
-
     main1OfAst (ctok, legacyReferenceResolver, reduceMemoryUsage, assemblyName, target, outFile, pdbFile, 
                 dllReferences, noframework, exiter, errorLoggerProvider, inputs)
-    |> main2a
+    |> main2a false
     |> main2b (tcImportsCapture, dynamicAssemblyCreator)
     |> main3
+    |> main4 dynamicAssemblyCreator
+
+let compileChecked (ctok, tcGlobals, tcImports, frameworkTcImports, generatedCcu, typedImplFiles, topAttrs, tcConfig, outfile, pdbfile, assemblyName, errorLogger, exiter, tcImportsCapture, dynamicAssemblyCreator) = 
+    Args (ctok, tcGlobals, tcImports, frameworkTcImports, generatedCcu, typedImplFiles, topAttrs, tcConfig, outfile, pdbfile, assemblyName, errorLogger, exiter)
+    |> main1
+    |> main2a true
+    |> main2b (tcImportsCapture, dynamicAssemblyCreator)
+    |> main3 
     |> main4 dynamicAssemblyCreator
 
 let mainCompile 

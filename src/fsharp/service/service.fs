@@ -184,6 +184,22 @@ module CompileHelpers =
 
         errors.ToArray(), result
 
+    let compileFromChecked (ctok, cpr: FSharpCheckProjectResults, tcImportsCapture, dynamicAssemblyCreator)  = 
+    
+        let errors, errorLogger, _loggerProvider = mkCompilationErrorHandlers()
+        
+        let (tcConfig, tcGlobals, tcImports, thisCcu, _ccuSig, _tcSymbolUses, topAttribs, tcAssemblyData, _ilAssemRef, _ad, tcAssemblyExpr, _dependencyFiles) = cpr.GetDetails() 
+
+        let result = 
+            match tcAssemblyExpr, topAttribs, tcAssemblyData with
+            | Some tcAssemblyExpr, Some topAttribs, Some tcAssemblyData ->
+                let assemblyName = tcAssemblyData.ShortAssemblyName
+                tryCompile errorLogger (fun exiter -> 
+                    compileChecked (ctok, tcGlobals, tcImports, tcImports, thisCcu, tcAssemblyExpr, topAttribs, tcConfig, tcConfig.outputFile.Value, None, assemblyName, errorLogger, exiter, tcImportsCapture, dynamicAssemblyCreator))
+            | _ -> 1
+
+        errors.ToArray(), result
+
     let createDynamicAssembly (ctok, debugInfo: bool, tcImportsRef: TcImports option ref, execute: bool, assemblyBuilderRef: _ option ref) (tcGlobals:TcGlobals, outfile, ilxMainModule) =
 
         // Create an assembly builder
@@ -747,7 +763,7 @@ type BackgroundCompiler(legacyReferenceResolver, projectCacheSize, keepAssemblyC
             let fileName = TcGlobals.DummyFileNameForRangesWithoutASpecificLocation
             let errors = [| yield! creationErrors; yield! ErrorHelpers.CreateErrorInfos (errorOptions, true, fileName, tcProj.TcErrors, suggestNamesForErrors) |]
             return FSharpCheckProjectResults (options.ProjectFileName, Some tcProj.TcConfig, keepAssemblyContents, errors, 
-                                              Some(tcProj.TcGlobals, tcProj.TcImports, tcProj.TcState.Ccu, tcProj.TcState.CcuSig, 
+                                              Some(tcProj.TcConfig, tcProj.TcGlobals, tcProj.TcImports, tcProj.TcState.Ccu, tcProj.TcState.CcuSig, 
                                                    tcProj.TcSymbolUses, tcProj.TopAttribs, tcAssemblyDataOpt, ilAssemRef, 
                                                    tcProj.TcEnvAtEnd.AccessRights, tcAssemblyExprOpt, Array.ofList tcProj.TcDependencyFiles))
       }
@@ -1039,7 +1055,15 @@ type FSharpChecker(legacyReferenceResolver,
        }
       )
 
-    member __.CompileToDynamicAssembly (otherFlags: string[], execute: (TextWriter * TextWriter) option, ?userOpName: string)  = 
+    member __.Compile(cpr: FSharpCheckProjectResults, ?userOpName: string) =
+      let userOpName = defaultArg userOpName "Unknown"
+      backgroundCompiler.Reactor.EnqueueAndAwaitOpAsync (userOpName, "Compile", "", fun ctok -> 
+       cancellable {
+            return CompileHelpers.compileFromChecked (ctok, cpr, None, None)
+       }
+      )
+
+    member ic.CompileToDynamicAssembly (otherFlags: string[], execute: (TextWriter * TextWriter) option, ?userOpName: string)  = 
       let userOpName = defaultArg userOpName "Unknown"
       backgroundCompiler.Reactor.EnqueueAndAwaitOpAsync (userOpName, "CompileToDynamicAssembly", "<dynamic>", fun ctok -> 
        cancellable {
