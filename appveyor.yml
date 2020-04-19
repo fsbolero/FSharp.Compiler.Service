@@ -4,7 +4,7 @@ init:
   - git config --global core.autocrlf input
 
 build_script:
-  - cmd: fcs\build.cmd TestAndNuGet
+  - cmd: fcs\build.cmd NuGet
 
 test: off
 version: '{build}'
